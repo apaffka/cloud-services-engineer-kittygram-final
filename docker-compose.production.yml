@@ -1,0 +1,53 @@
+version: '3.8'
+
+volumes:
+  pg_data:
+  static:
+  media:
+
+services:
+  postgres:
+    image: postgres:13
+    env_file: .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  frontend:
+    image: apaffka/kittygram_frontend:latest
+    volumes:
+      - static:/static
+    command: >
+      sh -c "cp -f /app/build/index.html /static/index.html &&
+             cp -r /app/build/static/* /static/ &&
+             tail -f /dev/null"
+    restart: always
+
+  backend:
+    image: apaffka/kittygram_backend:latest
+    env_file: .env
+    depends_on:
+      - postgres
+      - frontend
+    volumes:
+      - static:/app/static
+      - media:/app/media
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             exec gunicorn --bind 0.0.0.0:8001 kittygram_backend.wsgi:application"
+    restart: unless-stopped
+
+
+
+  gateway:
+    image: apaffka/kittygram_gateway:latest
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+      - frontend
+    volumes:
+      - static:/static
+      - media:/media
+    restart: unless-stopped

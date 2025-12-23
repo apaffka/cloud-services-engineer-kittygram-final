@@ -1,3 +1,9 @@
-POSTGRES_DB=kittygram
-POSTGRES_USER=kittygram_user
-POSTGRES_PASSWORD=kittygram_password
+SECRET_KEY=strongtxt
+DEBUG=False
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=name_for_db
+POSTGRES_DB=name_for_db
+POSTGRES_USER=db_user
+POSTGRES_PASSWORD=db_user_password
+DB_HOST=db_host_name
+DB_PORT=db_port
