@@ -166,4 +166,8 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
             ✅ Kittygram deployed successfully
-            URL: http://158.160.86.18:8080
+            👤 Actor: ${{ github.actor }}
+            🌿 Branch: ${{ github.ref_name }}
+            📝 Commit: ${{ github.event.head_commit.message || github.event.commits[0].message }}
+            🔗 Commit URL: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+            🌐 URL: http://${{ secrets.HOST }}:8080

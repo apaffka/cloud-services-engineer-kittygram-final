@@ -1,4 +1,5 @@
 import os
+from django.core.management.utils import get_random_secret_key
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -7,16 +8,17 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY', default='anytext')
+# Пофиксил ключик
+SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 
-DEBUG = os.getenv('DEBUG', default='False')
+# Если в env False, то "False" == "True" = False (булево значение)
+# Ну и наоборот
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = [
-    '158.160.86.18',
-    '127.0.0.1',
-    'localhost',
-    'kittygram_backend'
-]
+# Забираем строку из env или получаем пустой список []
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "")
+# Далее берём полученную строку, режем по запятым. Получим список хостов
+ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS.split(",") if h.strip()]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
