@@ -15,10 +15,8 @@ SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 # Ну и наоборот
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-# Забираем строку из env или получаем пустой список []
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "")
-# Далее берём полученную строку, режем по запятым. Получим список хостов
-ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS.split(",") if h.strip()]
+#Попробуем так, но есть подозрение, что можем получить косяк
+ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "").split(",")]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -67,7 +65,8 @@ WSGI_APPLICATION = 'kittygram_backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
-        'NAME': os.getenv('DB_NAME', default='kittygram'),
+        # Поставил тут POSTGRES_DB, чтобы не плодить переменные
+        'NAME': os.getenv('POSTGRES_DB', default='kittygram'),
         'USER': os.getenv('POSTGRES_USER', default='kittygram_user'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='kittygram_password'),
         'HOST': os.getenv('DB_HOST', default='postgres'),
